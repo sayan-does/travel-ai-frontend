@@ -1,0 +1,16 @@
+.git
+.gitignore
+.github
+node_modules/
+README.md
+*.log
+.env
+.env.*
+*.md
+.vscode/
+coverage/
+__tests__/
+test/
+tests/
+*.test.*
+*.spec.* 

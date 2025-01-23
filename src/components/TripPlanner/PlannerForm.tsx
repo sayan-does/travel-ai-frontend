@@ -3,6 +3,11 @@ import { MapPin, Calendar, DollarSign } from 'lucide-react';
 import { useTripForm } from '../../hooks/useTripForm';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
+import { TripFormData } from '../../types';
+
+interface PlannerFormProps {
+  onSubmit: (data: TripFormData) => Promise<void>;
+}
 
 const budgetOptions = [
   { value: 'budget', label: 'Budget (Under $1000)' },
@@ -10,7 +15,7 @@ const budgetOptions = [
   { value: 'luxury', label: 'Luxury ($3000+)' }
 ];
 
-export function PlannerForm({ onSubmit }) {
+export function PlannerForm({ onSubmit }: PlannerFormProps) {
   const { formData, updateField, handleSubmit } = useTripForm(onSubmit);
 
   const today = new Date().toISOString().split('T')[0];

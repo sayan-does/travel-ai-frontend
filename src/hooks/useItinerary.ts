@@ -29,6 +29,7 @@ export function useItinerary() {
         end_date: endDate,
         budget_level: formData.budget,
       });
+      console.log('Backend response:', response);
 
       // Transform backend response to frontend Itinerary format
       const transformedItinerary: Itinerary = {
@@ -43,12 +44,14 @@ export function useItinerary() {
       };
 
       setItinerary(transformedItinerary);
+      console.log('Transformed itinerary:', transformedItinerary);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate itinerary');
     } finally {
       setLoading(false);
     }
   };
+  
 
   return { itinerary, loading, error, generateItinerary };
 }

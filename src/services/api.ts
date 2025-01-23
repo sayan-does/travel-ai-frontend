@@ -11,7 +11,7 @@ export const api = {
         end_date: string;
         budget_level: string;
     }) {
-        const response = await fetch(`${API_BASE_URL}/chat`, {
+        const response = await fetch(`${API_BASE_URL}/generate-itinerary`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -27,20 +27,20 @@ export const api = {
         return response.json();
     },
 
-    async sendChatMessage(message: string) {
-        const response = await fetch(`${API_BASE_URL}/chat`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message }),
-        });
-
-        if (!response.ok) {
-            const error: APIError = await response.json();
-            throw new Error(error.detail || 'Failed to send message');
+async sendChatMessage(message: string) {
+    const response = await fetch(`${API_BASE_URL}/chat?message=${encodeURIComponent(message)}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
         }
+    });
 
-        return response.json();
+    if (!response.ok) {
+        const error: APIError = await response.json();
+        throw new Error(error.detail || 'Failed to send message');
+    }
+
+    return response.json();
+
     },
 }; 

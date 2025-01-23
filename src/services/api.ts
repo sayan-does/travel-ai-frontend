@@ -4,6 +4,10 @@ export interface APIError {
     detail: string;
 }
 
+export interface ChatResponse {
+    markdown: string;
+}
+
 export const api = {
     async generateItinerary(tripData: {
         destination: string;
@@ -27,7 +31,7 @@ export const api = {
         return response.json();
     },
 
-    async sendChatMessage(message: string) {
+    async sendChatMessage(message: string): Promise<ChatResponse> {
         const response = await fetch(`${API_BASE_URL}/chat?message=${encodeURIComponent(message)}`, {
             method: 'GET',
             headers: {

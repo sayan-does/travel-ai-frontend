@@ -1,4 +1,3 @@
-// src/components/ChatDisplay.tsx
 // import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Download } from 'lucide-react';

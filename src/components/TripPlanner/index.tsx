@@ -1,24 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PlannerForm } from './PlannerForm';
 import { ItineraryDisplay } from './ItineraryDisplay';
 import { useItinerary } from '../../hooks/useItinerary';
+import { api } from '../../services/api';
 
 export function TripPlanner() {
   const { itinerary, loading, error, generateItinerary } = useItinerary();
+  const [chatResponse, setChatResponse] = useState<string | null>(null);
+  const [chatLoading, setChatLoading] = useState(false);
+
+  const handleChatMessage = async (message: string) => {
+    try {
+      setChatLoading(true);
+      const response = await api.sendChatMessage(message);
+      setChatResponse(response.markdown);
+    } catch (error) {
+      console.error('Failed to get chat response:', error);
+    } finally {
+      setChatLoading(false);
+    }
+  };
 
   return (
     <section id="planner" className="relative py-20 px-4 bg-gradient-to-b from-blue-50 to-white">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-100 rounded-full opacity-50" />
-        <div className="absolute top-20 -left-20 w-60 h-60 bg-blue-50 rounded-full opacity-30" />
-        <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-100 rounded-full opacity-40" />
-      </div>
-
+      {/* ... existing code ... */}
+      
       <div className="relative max-w-4xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-blue-900">
-          Customize Your Trip
-        </h2>
+        {/* ... existing code ... */}
+        
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
           <PlannerForm onSubmit={generateItinerary} />
 
@@ -36,6 +45,20 @@ export function TripPlanner() {
           )}
 
           {itinerary && <ItineraryDisplay itinerary={itinerary} />}
+
+          {/* Add chat response display */}
+          {chatResponse && (
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <div dangerouslySetInnerHTML={{ __html: chatResponse }} />
+            </div>
+          )}
+
+          {chatLoading && (
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-2 text-gray-600">Processing your request...</p>
+            </div>
+          )}
         </div>
       </div>
     </section>

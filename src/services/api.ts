@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = 'http://127.0.0.1:8080';
 
 export interface APIError {
     detail: string;
@@ -11,7 +11,7 @@ export const api = {
         end_date: string;
         budget_level: string;
     }) {
-        const response = await fetch(`${API_BASE_URL}/generate-itinerary`, {
+        const response = await fetch(`${API_BASE_URL}/chat`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

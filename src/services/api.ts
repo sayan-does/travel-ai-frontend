@@ -27,20 +27,19 @@ export const api = {
         return response.json();
     },
 
-async sendChatMessage(message: string) {
-    const response = await fetch(`${API_BASE_URL}/chat?message=${encodeURIComponent(message)}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
+    async sendChatMessage(message: string) {
+        const response = await fetch(`${API_BASE_URL}/chat?message=${encodeURIComponent(message)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            const error: APIError = await response.json();
+            throw new Error(error.detail || 'Failed to send message');
         }
-    });
 
-    if (!response.ok) {
-        const error: APIError = await response.json();
-        throw new Error(error.detail || 'Failed to send message');
-    }
-
-    return response.json();
-
+        return response.json();
     },
-}; 
+};

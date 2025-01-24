@@ -1,65 +1,65 @@
+// src/components/TripPlanner/index.tsx
+
 import React, { useState } from 'react';
-import { PlannerForm } from './PlannerForm';
-import { ItineraryDisplay } from './ItineraryDisplay';
 import { useItinerary } from '../../hooks/useItinerary';
 import { api } from '../../services/api';
+import { PlannerForm } from './PlannerForm';
+import { ItineraryDisplay } from './ItineraryDisplay';
+import { TripFormData } from '../../types';
 
 export function TripPlanner() {
   const { itinerary, loading, error, generateItinerary } = useItinerary();
   const [chatResponse, setChatResponse] = useState<string | null>(null);
   const [chatLoading, setChatLoading] = useState(false);
 
+  const handleSubmit = async (formData: TripFormData) => {
+    await generateItinerary(formData);
+  };
+
   const handleChatMessage = async (message: string) => {
+    setChatLoading(true);
     try {
-      setChatLoading(true);
       const response = await api.sendChatMessage(message);
       setChatResponse(response.markdown);
-    } catch (error) {
-      console.error('Failed to get chat response:', error);
+    } catch (err) {
+      console.error('Chat error:', err);
     } finally {
       setChatLoading(false);
     }
   };
 
   return (
-    <section id="planner" className="relative py-20 px-4 bg-gradient-to-b from-blue-50 to-white">
-      {/* ... existing code ... */}
-      
-      <div className="relative max-w-4xl mx-auto">
-        {/* ... existing code ... */}
+    <section className="py-12 bg-gradient-to-b from-blue-50 to-white">
+      <div className="container mx-auto px-4">
+        <PlannerForm onSubmit={handleSubmit} />
         
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
-          <PlannerForm onSubmit={generateItinerary} />
+        {loading && (
+          <div className="text-center mt-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Generating your itinerary...</p>
+          </div>
+        )}
 
-          {loading && (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Generating your perfect itinerary...</p>
-            </div>
-          )}
+        {error && (
+          <div className="mt-8 p-4 bg-red-50 text-red-600 rounded-lg">
+            {error}
+          </div>
+        )}
 
-          {error && (
-            <div className="bg-red-50 text-red-600 p-4 rounded-lg mt-6">
-              {error}
-            </div>
-          )}
+        {itinerary && <ItineraryDisplay itinerary={itinerary} />}
 
-          {itinerary && <ItineraryDisplay itinerary={itinerary} />}
+        {chatResponse && (
+          <div className="mt-8 p-6 bg-white rounded-lg shadow-sm border">
+            <div dangerouslySetInnerHTML={{ __html: chatResponse }} />
+          </div>
+        )}
 
-          {/* Add chat response display */}
-          {chatResponse && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <div dangerouslySetInnerHTML={{ __html: chatResponse }} />
-            </div>
-          )}
-
-          {chatLoading && (
-            <div className="text-center py-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-2 text-gray-600">Processing your request...</p>
-            </div>
-          )}
-        </div>
+        {chatLoading && (
+          <div className="text-center mt-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Processing your request...</p>
+          </div>
+        )}
       </div>
     </section>
   );

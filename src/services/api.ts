@@ -1,49 +1,53 @@
-const API_BASE_URL = 'http://127.0.0.1:8080';
+// src/services/api.ts
 
-export interface APIError {
-    detail: string;
+export const API_BASE_URL = 'http://127.0.0.1:8080';
+
+interface APIError {
+  detail: string;
 }
 
-export interface ChatResponse {
-    markdown: string;
+interface ChatResponse {
+  markdown: string;
 }
 
 export const api = {
-    async generateItinerary(tripData: {
-        destination: string;
-        start_date: string;
-        end_date: string;
-        budget_level: string;
-    }) {
-        const response = await fetch(`${API_BASE_URL}/generate-itinerary`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(tripData),
-        });
+  async generateItinerary(tripData: {
+    destination: string;
+    start_date: string;
+    end_date: string;
+    budget_level: string;
+  }) {
+    const url = `${API_BASE_URL}/generate-itinerary`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(tripData),
+    });
 
-        if (!response.ok) {
-            const error: APIError = await response.json();
-            throw new Error(error.detail || 'Failed to generate itinerary');
-        }
+    if (!response.ok) {
+      const error: APIError = await response.json();
+      throw new Error(error.detail || 'Failed to generate itinerary');
+    }
 
-        return response.json();
-    },
+    return response.json();
+  },
 
-    async sendChatMessage(message: string): Promise<ChatResponse> {
-        const response = await fetch(`${API_BASE_URL}/chat?message=${encodeURIComponent(message)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
+  async sendChatMessage(message: string) {
+    const url = `${API_BASE_URL}/chat?message=${encodeURIComponent(message)}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-        if (!response.ok) {
-            const error: APIError = await response.json();
-            throw new Error(error.detail || 'Failed to send message');
-        }
+    if (!response.ok) {
+      const error: APIError = await response.json();
+      throw new Error(error.detail || 'Failed to send chat message');
+    }
 
-        return response.json();
-    },
+    return response.json() as Promise<ChatResponse>;
+  },
 };
